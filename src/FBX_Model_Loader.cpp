@@ -66,7 +66,6 @@ FBX_Model_Loader::FBX_Model_Loader(const std::string &filepath){
             Mesh meshy;
             meshy._vertices = std::move(vertices);
             meshy._indices = indices;
-
             Meshes.push_back({meshy, indices});
         }
     }
