@@ -162,7 +162,6 @@ void VulkanEngine::draw()
 		constants.render_matrix = mesh_matrix;
 
 		vkCmdPushConstants(cmd, _meshPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(MeshPushConstants), &constants);
-
 		vkCmdDrawIndexed(cmd, static_cast<uint32_t>(i._indices.size()), 1, 0, 0, 0);
 	}
 
@@ -361,8 +360,8 @@ void VulkanEngine::init_swapchain()
 	_swapchain = vkbSwapchain.swapchain;
 	_swapchainImages = vkbSwapchain.get_images().value();
 	_swapchainImageViews = vkbSwapchain.get_image_views().value();
-
 	_swachainImageFormat = vkbSwapchain.image_format;
+
 
 	VkExtent3D depthImageExtent = {
 		_windowExtent.width,
@@ -372,15 +371,11 @@ void VulkanEngine::init_swapchain()
 	_depthFormat = VK_FORMAT_D32_SFLOAT;
 
 	VkImageCreateInfo dimg_info = vkinit::image_create_info(_depthFormat, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, depthImageExtent);
-
 	VmaAllocationCreateInfo dimg_allocinfo = {};
 	dimg_allocinfo.usage = VMA_MEMORY_USAGE_GPU_ONLY;
 	dimg_allocinfo.requiredFlags = VkMemoryPropertyFlags(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-
 	vmaCreateImage(_allocator, &dimg_info, &dimg_allocinfo, &_depthImage.image, &_depthImage.allocation, nullptr);
-
 	VkImageViewCreateInfo dview_info = vkinit::imageview_create_info(_depthFormat, _depthImage.image, VK_IMAGE_ASPECT_DEPTH_BIT);
-
 	VK_CHECK(vkCreateImageView(_device, &dview_info, nullptr, &_depthImageView));
 
 	_mainDeletionQueue.push_function([=]()
@@ -545,7 +540,6 @@ void VulkanEngine::init_framebuffers()
 		VkImageView attachments[2];
 		attachments[0] = _swapchainImageViews[i];
 		attachments[1] = _depthImageView;
-
 		fb_info.pAttachments = attachments;
 		fb_info.attachmentCount = 2;
 		VK_CHECK(vkCreateFramebuffer(_device, &fb_info, nullptr, &_framebuffers[i]));
@@ -820,7 +814,6 @@ void VulkanEngine::upload_mesh(std::vector<Mesh> &model_meshes)
 		bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 		VmaAllocationCreateInfo vmaallocInfo = {};
 		vmaallocInfo.usage = VMA_MEMORY_USAGE_CPU_TO_GPU;
-
 		vmaCreateBuffer(_allocator, &bufferInfo, &vmaallocInfo,
 						&model_meshes[i]._vertexBuffer._buffer,
 						&model_meshes[i]._vertexBuffer._allocation,
